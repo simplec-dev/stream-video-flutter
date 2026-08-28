@@ -50,6 +50,9 @@ object IncomingCallConstants {
 
     const val EXTRA_CALL_EXTRA = "EXTRA_CALL_EXTRA"
     const val EXTRA_CALL_HEADERS = "EXTRA_CALL_HEADERS"
+
+    /// Push header: skip full-screen intent; CallStyle notification only.
+    const val HEADER_SKIP_FULL_SCREEN_INTENT = "simplec_skip_full_screen_intent"
     const val EXTRA_CALL_SHOW_CALL_HANDLE = "EXTRA_CALL_SHOW_CALL_HANDLE"
     const val EXTRA_CALL_RINGTONE_PATH = "EXTRA_CALL_RINGTONE_PATH"
     

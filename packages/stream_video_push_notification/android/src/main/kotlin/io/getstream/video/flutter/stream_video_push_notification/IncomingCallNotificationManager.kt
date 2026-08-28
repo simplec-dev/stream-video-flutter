@@ -121,10 +121,14 @@ class IncomingCallNotificationManager(
         )
         notificationBuilder?.setOnlyAlertOnce(true)
         notificationBuilder?.setSound(null)
-        notificationBuilder?.setFullScreenIntent(
-            getActivityPendingIntent(notificationId, data), true
-        )
-        notificationBuilder?.setContentIntent(getActivityPendingIntent(notificationId, data))
+        if (shouldSkipFullScreenIntent(data)) {
+            notificationBuilder?.setContentIntent(getAppPendingIntent(notificationId, data))
+        } else {
+            notificationBuilder?.setFullScreenIntent(
+                getActivityPendingIntent(notificationId, data), true
+            )
+            notificationBuilder?.setContentIntent(getActivityPendingIntent(notificationId, data))
+        }
 
         val typeCall = data.getInt(IncomingCallConstants.EXTRA_CALL_TYPE, -1)
         var smallIcon = context.applicationInfo.icon
@@ -574,6 +578,14 @@ class IncomingCallNotificationManager(
             context, IncomingCallConstants.ACTION_CALL_CALLBACK, data
         )
         return PendingIntent.getActivity(context, id, intentTransparent, getFlagPendingIntent())
+    }
+
+    private fun shouldSkipFullScreenIntent(data: Bundle): Boolean {
+        val raw = data.getSerializable(IncomingCallConstants.EXTRA_CALL_HEADERS) ?: return false
+        val headers = raw as? Map<*, *> ?: return false
+        return headers[IncomingCallConstants.HEADER_SKIP_FULL_SCREEN_INTENT]
+            ?.toString()
+            ?.equals("true", ignoreCase = true) == true
     }
 
     private fun getActivityPendingIntent(id: Int, data: Bundle): PendingIntent {
