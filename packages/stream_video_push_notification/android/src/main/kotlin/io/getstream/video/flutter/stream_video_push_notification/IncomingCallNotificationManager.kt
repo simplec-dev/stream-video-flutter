@@ -122,8 +122,13 @@ class IncomingCallNotificationManager(
         notificationBuilder?.setOnlyAlertOnce(true)
         notificationBuilder?.setSound(null)
         if (shouldSkipFullScreenIntent(data)) {
+            Log.i(
+                "SimpleC",
+                "incoming call notification: NOT using full-screen intent (CallStyle only)"
+            )
             notificationBuilder?.setContentIntent(getAppPendingIntent(notificationId, data))
         } else {
+            Log.i("SimpleC", "incoming call notification: using full-screen intent")
             notificationBuilder?.setFullScreenIntent(
                 getActivityPendingIntent(notificationId, data), true
             )
