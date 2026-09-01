@@ -267,7 +267,7 @@ class IncomingCallActivity : Activity() {
         val timeOut = duration - abs(currentSystemTime - timeStartCall)
         Handler(Looper.getMainLooper()).postDelayed({
             if (!isFinishing) {
-                finishTask()
+                onTimeout()
             }
         }, timeOut)
     }
@@ -340,6 +340,17 @@ class IncomingCallActivity : Activity() {
         val intent =
             IncomingCallBroadcastReceiver.getIntentDecline(this@IncomingCallActivity, data)
         sendBroadcast(intent)
+        finishTask()
+    }
+
+    /// Same clear path as notification timeout / decline: stop ringtone, cancel
+    /// CallStyle, then close. Previously [finishTask] only dismissed the
+    /// activity and [IncomingCallSoundPlayerManager] kept playing.
+    private fun onTimeout() {
+        val data = intent.extras?.getBundle(IncomingCallConstants.EXTRA_CALL_INCOMING_DATA)
+        sendBroadcast(
+            IncomingCallBroadcastReceiver.getIntentTimeout(this@IncomingCallActivity, data)
+        )
         finishTask()
     }
 
